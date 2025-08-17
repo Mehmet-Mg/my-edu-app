@@ -54,10 +54,10 @@ export default function UserCreate() {
                         className="space-y-6"
                     >
                         {({ errors, processing, recentlySuccessful }) => (
-                            <>
-                                <div className="grid gap-2">
+                            <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+                                <div className="lg:col-span-2 grid gap-2">
                                     <Label htmlFor="role">Role</Label>
-                                    <RoleSelect name="role" />
+                                    <RoleSelect name="role" tabIndex={1} />
                                     <InputError message={errors.role} className="mt-2" />
                                 </div>
 
@@ -72,6 +72,7 @@ export default function UserCreate() {
                                         className="mt-1 block w-full"
                                         autoComplete="name"
                                         placeholder="Name"
+                                        tabIndex={2}
                                     />
 
                                     <InputError message={errors.name} />
@@ -88,6 +89,7 @@ export default function UserCreate() {
                                         className="mt-1 block w-full"
                                         autoComplete="email"
                                         placeholder="Email"
+                                        tabIndex={3}
                                     />
 
                                     <InputError message={errors.email} />
@@ -99,7 +101,7 @@ export default function UserCreate() {
                                         id="password"
                                         type="password"
                                         required
-                                        tabIndex={3}
+                                        tabIndex={4}
                                         autoComplete="new-password"
                                         name="password"
                                         placeholder="Password"
@@ -113,7 +115,7 @@ export default function UserCreate() {
                                         id="password_confirmation"
                                         type="password"
                                         required
-                                        tabIndex={4}
+                                        tabIndex={5}
                                         autoComplete="new-password"
                                         name="password_confirmation"
                                         placeholder="Confirm password"
@@ -121,7 +123,7 @@ export default function UserCreate() {
                                     <InputError message={errors.password_confirmation} />
                                 </div>
 
-                                <div className="flex items-center justify-between gap-4">
+                                <div className="lg:col-span-2 flex items-center justify-between gap-4">
                                     <Button asChild type="button">
                                         <Link href={route('users.index')}>
                                             <ArrowLeftIcon />
@@ -143,7 +145,7 @@ export default function UserCreate() {
                                         <p className="text-sm text-neutral-600">Saved</p>
                                     </Transition>
                                 </div>
-                            </>
+                            </div>
                         )}
                     </Form>
                 </div>

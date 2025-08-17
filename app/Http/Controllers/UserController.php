@@ -54,7 +54,7 @@ class UserController extends Controller
 
         // Auth::login($user);
 
-        return redirect(route('users.index'));
+        return redirect(route('users.index'))->with('success', 'User created.');
     }
 
     /**
@@ -81,7 +81,7 @@ class UserController extends Controller
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore($request->get('id')),
+                Rule::unique(User::class),//->ignore($request->get('id')),
             ],
         ]);
 
@@ -95,7 +95,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect(route('users.index'));
+        return redirect(route('users.index'))->with('success', 'User updated.');
     }
 
     /**
@@ -115,6 +115,6 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect(route('users.index'));
+        return redirect(route('users.index'))->with('success', 'User deleted.');;
     }
 }
