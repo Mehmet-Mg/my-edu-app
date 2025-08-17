@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import RoleSelect from '@/components/role-select';
 
 export default function Register() {
     return (
@@ -22,6 +23,12 @@ export default function Register() {
                 {({ processing, errors }) => (
                     <>
                         <div className="grid gap-6">
+                            <div className="grid gap-2">
+                                <Label htmlFor="role">Role</Label>
+                                <RoleSelect name='role'/>
+                                <InputError message={errors.role} className="mt-2" />
+                            </div>
+
                             <div className="grid gap-2">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
