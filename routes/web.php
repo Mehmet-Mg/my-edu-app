@@ -17,7 +17,7 @@ Route::get('/blog', function () {
     return Inertia::render('blog');
 })->name('blog');
 
-Route::resource('/users', UserController::class)->only(['index', 'edit', 'create', 'show', 'destroy']);
+Route::resource('/users', UserController::class)->only(['index', 'edit', 'create', 'show', 'destroy', 'update', 'store']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

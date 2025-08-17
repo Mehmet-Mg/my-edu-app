@@ -14,9 +14,10 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Trash2 } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from 'lucide-react';
 import * as React from 'react';
 
+import AlertMessage from '@/components/alert-message';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -29,8 +30,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import AlertMessage from '@/components/alert-message';
-import { cn } from '@/lib/utils';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -38,8 +37,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/users',
     },
 ];
-
-
 
 export const columns: ColumnDef<User>[] = [
     {
@@ -89,11 +86,10 @@ export const columns: ColumnDef<User>[] = [
         enableHiding: false,
         cell: ({ row }) => {
             const user = row.original;
-            const [open, setOpen] = React.useState(false)
             return (
-                <DropdownMenu open={open}>
+                <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0" onClick={() => setOpen(!open)}>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
                             <span className="sr-only">Open menu</span>
                             <MoreHorizontal />
                         </Button>
@@ -104,14 +100,14 @@ export const columns: ColumnDef<User>[] = [
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => router.visit(route('users.show', row.getValue('id')))}>View user</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => router.visit(route('users.edit', row.getValue('id')))}>Edit user</DropdownMenuItem>
-                        <DropdownMenuItem  variant='destructive' asChild>
-                            <AlertMessage triggerTitle='Delete'
-                            onContinue={() => {
-                                setOpen(false);
-                                router.delete(route('users.destroy', row.getValue('id')))
-                            }}
+                        <DropdownMenuItem variant="destructive" asChild>
+                            <AlertMessage
+                                triggerTitle="Delete"
+                                onContinue={() => {
+                                    router.delete(route('users.destroy', row.getValue('id')));
+                                }}
                             />
-                             {/* <Link href={route('users.destroy', user.id)} method='delete'>
+                            {/* <Link href={route('users.destroy', user.id)} method='delete'>
                                         <Trash2 />
                                         Delete
                                     </Link> */}
@@ -153,37 +149,45 @@ export default function Users({ users }: { users: User[] }) {
             <Head title="Users" />
 
             <div className="h-full w-full p-4">
-                <div className="flex items-center py-4">
+                <div className="flex items-center justify-between py-4">
                     <Input
                         placeholder="Filter emails..."
                         value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
                         onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
                         className="max-w-sm"
                     />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" className="ml-auto">
-                                Columns <ChevronDown />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            {table
-                                .getAllColumns()
-                                .filter((column) => column.getCanHide())
-                                .map((column) => {
-                                    return (
-                                        <DropdownMenuCheckboxItem
-                                            key={column.id}
-                                            className="capitalize"
-                                            checked={column.getIsVisible()}
-                                            onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                                        >
-                                            {column.id}
-                                        </DropdownMenuCheckboxItem>
-                                    );
-                                })}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex gap-2">
+                        <Button asChild>
+                            <Link href={route('users.create')}>
+                                <Plus />
+                                Create
+                            </Link>
+                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="ml-auto">
+                                    Columns <ChevronDown />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                {table
+                                    .getAllColumns()
+                                    .filter((column) => column.getCanHide())
+                                    .map((column) => {
+                                        return (
+                                            <DropdownMenuCheckboxItem
+                                                key={column.id}
+                                                className="capitalize"
+                                                checked={column.getIsVisible()}
+                                                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                                            >
+                                                {column.id}
+                                            </DropdownMenuCheckboxItem>
+                                        );
+                                    })}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
                 <div className="overflow-hidden rounded-md border">
                     <Table>
