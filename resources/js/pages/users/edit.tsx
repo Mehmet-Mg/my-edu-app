@@ -11,8 +11,10 @@ import { Label } from '@/components/ui/label';
 import { Transition } from '@headlessui/react';
 import { ArrowLeftIcon, Save } from 'lucide-react';
 import { useRef } from 'react';
+import RoleSelect from '@/components/role-select';
 
-export default function UserShow({ user }: { user: User }) {
+export default function UserShow({ user, roles }: { user: User, roles: string[] }) {
+    debugger
     const nameInput = useRef<HTMLInputElement>(null);
     const emailInput = useRef<HTMLInputElement>(null);
 
@@ -53,7 +55,7 @@ export default function UserShow({ user }: { user: User }) {
                         className="space-y-6"
                     >
                         {({ errors, processing, recentlySuccessful }) => (
-                            <>
+                            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                                 <Input id="id" name="id" type="hidden" defaultValue={user.id} />
 
                                 <div className="grid gap-2">
@@ -90,7 +92,13 @@ export default function UserShow({ user }: { user: User }) {
                                     <InputError message={errors.email} />
                                 </div>
 
-                                <div className="flex items-center justify-between gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="role">Role</Label>
+                                    <RoleSelect name="role" tabIndex={1} defaultValue={roles.length > 0 ? roles[0] : ''} />
+                                    <InputError message={errors.role} />
+                                </div>
+
+                                <div className="flex items-center justify-between gap-4 lg:col-span-2">
                                     <Button asChild type="button">
                                         <Link href={route('users.index')}>
                                             <ArrowLeftIcon />
@@ -112,7 +120,7 @@ export default function UserShow({ user }: { user: User }) {
                                         <p className="text-sm text-neutral-600">Saved</p>
                                     </Transition>
                                 </div>
-                            </>
+                            </div>
                         )}
                     </Form>
                 </div>

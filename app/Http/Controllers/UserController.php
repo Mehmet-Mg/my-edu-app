@@ -21,7 +21,7 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('users/index', [
-            'users' => User::all(),
+            'users' => User::with('roles')->get(),
         ]);
     }
 
@@ -63,7 +63,8 @@ class UserController extends Controller
     public function edit(User $user): Response
     {
         return Inertia::render('users/edit', [
-            'user' => $user,
+            'user' => $user->only(['id', 'name', 'email']),
+            'roles' => $user->getRoleNames(),
         ]);
     }
 
@@ -104,7 +105,8 @@ class UserController extends Controller
     public function show(User $user): Response
     {
         return Inertia::render('users/show', [
-            'user' => $user,
+            'user' => $user->only(['id', 'name', 'email', 'email_verified_at']),
+            'roles' => $user->getRoleNames(),
         ]);
     }
 

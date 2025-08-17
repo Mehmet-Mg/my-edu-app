@@ -9,8 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeftIcon, Edit } from 'lucide-react';
+import RoleSelect from '@/components/role-select';
 
-export default function UserShow({ user }: { user: User }) {
+export default function UserShow({ user, roles }: { user: User, roles: string[] }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Users',
@@ -29,34 +30,12 @@ export default function UserShow({ user }: { user: User }) {
                 <div className="space-y-6">
                     <HeadingSmall title={user.name} description="Ensure your account is using a long, random password to stay secure" />
 
-                    {/* <Form
-                        method="put"
-                        action={route('password.update')}
-                        options={{
-                            preserveScroll: true,
-                        }}
-                        resetOnError={['password', 'password_confirmation', 'current_password']}
-                        resetOnSuccess
-                        onError={(errors) => {
-                            // if (errors.password) {
-                            //     passwordInput.current?.focus();
-                            // }
-
-                            // if (errors.current_password) {
-                            //     currentPasswordInput.current?.focus();
-                            // }
-                        }}
-                        className="space-y-6"
-                    >
-                        {({ errors, processing, recentlySuccessful }) => (
-                         */}
-                    <>
+                    <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                         <div className="grid gap-2">
                             <Label htmlFor="name">Name</Label>
 
                             <Input
                                 id="name"
-                                // ref={currentPasswordInput}
                                 name="name"
                                 type="text"
                                 className="mt-1 block w-full"
@@ -65,8 +44,6 @@ export default function UserShow({ user }: { user: User }) {
                                 disabled
                                 defaultValue={user.name}
                             />
-
-                            {/* <InputError message={errors.name} /> */}
                         </div>
 
                         <div className="grid gap-2">
@@ -74,7 +51,6 @@ export default function UserShow({ user }: { user: User }) {
 
                             <Input
                                 id="email"
-                                // ref={passwordInput}
                                 name="email"
                                 type="email"
                                 className="mt-1 block w-full"
@@ -83,8 +59,6 @@ export default function UserShow({ user }: { user: User }) {
                                 disabled
                                 defaultValue={user.email}
                             />
-
-                            {/* <InputError message={errors.email} /> */}
                         </div>
 
                         <div className="grid gap-2">
@@ -100,11 +74,16 @@ export default function UserShow({ user }: { user: User }) {
                                 disabled
                                 defaultValue={user.email_verified_at ?? ''}
                             />
-
-                            {/* <InputError message={errors.email_verified_at} /> */}
                         </div>
 
-                        <div className="flex items-center justify-between gap-4">
+                        <div className="lg:col-span-2 grid gap-2">
+                            <Label htmlFor="role">Role</Label>
+                            <RoleSelect 
+                            disabled
+                            name="role" tabIndex={3} defaultValue={roles.length > 0 ? roles[0] : ''} />
+                        </div>
+
+                        <div className="flex items-center justify-between gap-4 lg:col-span-2">
                             <Button asChild>
                                 <Link href={route('users.index')}>
                                     <ArrowLeftIcon />
@@ -125,18 +104,8 @@ export default function UserShow({ user }: { user: User }) {
                                     }}
                                 />
                             </div>
-
-                            {/* <Transition
-                                        show={recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <p className="text-sm text-neutral-600">Saved</p>
-                                    </Transition> */}
                         </div>
-                    </>
+                    </div>
                 </div>
             </div>
         </AppLayout>
