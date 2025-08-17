@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,6 +16,8 @@ Route::get('/contact', function () {
 Route::get('/blog', function () {
     return Inertia::render('blog');
 })->name('blog');
+
+Route::resource('/users', UserController::class)->only(['index', 'edit', 'create', 'show', 'destroy']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
