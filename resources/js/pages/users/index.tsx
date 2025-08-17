@@ -78,6 +78,11 @@ export const columns: ColumnDef<User>[] = [
         cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
     },
     {
+        accessorKey: 'roles',
+        header: 'Role',
+        cell: ({ row }) => <div className="capitalize">{row.getValue('roles') ? row.getValue('roles')[0].name : ''}</div>,
+    },
+    {
         accessorKey: 'email_verified_at',
         header: 'Email Verified At',
         cell: ({ row }) => <div className="capitalize">{row.getValue('email_verified_at')}</div>,

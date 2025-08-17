@@ -16,12 +16,12 @@ use Illuminate\Validation\Rules;
 class UserController extends Controller
 {
     /**
-     * Show the user's profile settings page.
+     * Show the user's profile settin   gs page.
      */
     public function index(Request $request): Response
     {
         return Inertia::render('users/index', [
-            'users' => User::with('roles')->get(),
+            'users' => User::with('roles:name')->without('pivot')->get(),
         ]);
     }
 

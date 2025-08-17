@@ -14,7 +14,6 @@ import { useRef } from 'react';
 import RoleSelect from '@/components/role-select';
 
 export default function UserShow({ user, roles }: { user: User, roles: string[] }) {
-    debugger
     const nameInput = useRef<HTMLInputElement>(null);
     const emailInput = useRef<HTMLInputElement>(null);
 
