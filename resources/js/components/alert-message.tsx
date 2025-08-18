@@ -33,9 +33,8 @@ export default function AlertMessage({icon, triggerTitle, className, title, desc
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" >
-                    <Trash2 />
-                    {triggerTitle ?? "Open"}</Button>
+                <Button variant="destructive" size="icon"  className="size-8">
+                    <Trash2 /></Button>
                 </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>

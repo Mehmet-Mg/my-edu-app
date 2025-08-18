@@ -14,7 +14,7 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, ChevronRightIcon, Edit, Eye, MoreHorizontal, Plus, Trash } from 'lucide-react';
 import * as React from 'react';
 
 import AlertMessage from '@/components/alert-message';
@@ -80,7 +80,7 @@ export const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'roles',
         header: 'Role',
-        cell: ({ row }) => <div className="capitalize">{row.getValue('roles') ? row.getValue('roles')[0].name : ''}</div>,
+        cell: ({ row }) => <div className="capitalize">{(row.getValue('roles') && row.getValue('roles').length > 0) ? row.getValue('roles')[0].name : ''}</div>,
     },
     {
         accessorKey: 'email_verified_at',
@@ -89,44 +89,35 @@ export const columns: ColumnDef<User>[] = [
     },
     {
         id: 'actions',
+        header: "İşlemler",
         enableHiding: false,
         cell: ({ row }) => {
             const user = row.original;
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.id.toLocaleString())}>Copy payment ID</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => router.visit(route('users.show', row.getValue('id')))}>View user</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => router.visit(route('users.edit', row.getValue('id')))}>Edit user</DropdownMenuItem>
-                        <DropdownMenuItem variant="destructive" asChild>
-                            <AlertMessage
-                                triggerTitle="Delete"
-                                onContinue={() => {
-                                    router.delete(route('users.destroy', row.getValue('id')));
-                                }}
-                            />
-                            {/* <Link href={route('users.destroy', user.id)} method='delete'>
-                                        <Trash2 />
-                                        Delete
-                                    </Link> */}
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <div className='flex gap-2'>
+                    <Button variant="secondary" size="icon" className="size-8 bg-yellow-500 hover:bg-yellow-200" asChild>
+                        <Link href={route('users.show', user.id)}>
+                            <Eye />
+                        </Link>
+                    </Button>
+                    <Button variant="default" size="icon" className="size-8" asChild>
+                        <Link href={route('users.edit', user.id)} >
+                            <Edit />
+                        </Link>
+                    </Button>
+                    <AlertMessage
+                        onContinue={() => {
+                            router.delete(route('users.destroy', row.getValue('id')));
+                        }}
+                    />
+                </div>
             );
         },
     },
 ];
 
 export default function Users({ users }: { users: User[] }) {
-    const {flash} = usePage<SharedData>().props;
+    const { flash } = usePage<SharedData>().props;
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
