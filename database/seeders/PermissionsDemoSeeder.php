@@ -40,19 +40,25 @@ class PermissionsDemoSeeder extends Seeder
 
         // create demo users
         $user = \App\Models\User::factory()->create([
-            'name' => 'Example User',
+            'name' => 'ExampleUser',
+            'first_name' => 'Example',
+            'last_name' => 'User',
             'email' => 'tester@example.com',
         ]);
         $user->assignRole($role1);
 
         $user = \App\Models\User::factory()->create([
-            'name' => 'Example Admin User',
+            'name' => 'ExampleAdminUser',
+            'first_name' => 'ExampleAdminUser',
+            'last_name' => 'ExampleAdminUser',
             'email' => 'admin@example.com',
         ]);
         $user->assignRole($role2);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Example Super-Admin User',
+            'first_name' => 'Example Super-Admin User',
+            'last_name' => 'Example Super-Admin User',
             'email' => 'superadmin@example.com',
         ]);
         $user->assignRole($role3);
@@ -60,6 +66,8 @@ class PermissionsDemoSeeder extends Seeder
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Example Teacher User',
+            'first_name' => 'Example Teacher User',
+            'last_name' => 'Example Teacher User',
             'email' => 'teacher@example.com',
         ]);
         $user->assignRole($role4);
@@ -67,6 +75,8 @@ class PermissionsDemoSeeder extends Seeder
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Example Student User',
+            'first_name' => 'Example Student User',
+            'last_name' => 'Example Student User',
             'email' => 'student@example.com',
         ]);
         $user->assignRole($role5);

@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { SharedData, User, type BreadcrumbItem } from '@/types';
+import { PaginatedData, SharedData, User, type BreadcrumbItem } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ColumnDef,
@@ -14,7 +14,7 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, ChevronRightIcon, Edit, Eye, MoreHorizontal, Plus, Trash } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, ChevronLeftIcon, ChevronRightIcon, Edit, Eye, Plus } from 'lucide-react';
 import * as React from 'react';
 
 import AlertMessage from '@/components/alert-message';
@@ -24,13 +24,23 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+
+
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
+import { cn } from '@/lib/utils';
+import PaginationWithLink from '@/components/pagination-with-link';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -116,13 +126,14 @@ export const columns: ColumnDef<User>[] = [
     },
 ];
 
-export default function Users({ users }: { users: User[] }) {
+export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedData<User> }) {
     const { flash } = usePage<SharedData>().props;
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
-
+    const users = paginatedUsers.data;
+    debugger;
     React.useEffect(() => {
         if (flash.success) {
             toast.success(flash.success)
@@ -230,19 +241,20 @@ export default function Users({ users }: { users: User[] }) {
                         </TableBody>
                     </Table>
                 </div>
-                <div className="flex items-center justify-end space-x-2 py-4">
+                <PaginationWithLink links={paginatedUsers.meta.links} />
+                {/* <div className="flex items-center justify-end space-x-2 py-4">
                     <div className="flex-1 text-sm text-muted-foreground">
                         {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
                     </div>
                     <div className="space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!paginatedUsers.links.prev}>
                             Previous
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!paginatedUsers.links.next}>
                             Next
                         </Button>
                     </div>
-                </div>
+                </div> */}
             </div>
         </AppLayout>
     );

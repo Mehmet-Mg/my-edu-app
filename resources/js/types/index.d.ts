@@ -51,3 +51,30 @@ export interface Role {
     id: number;
     name: string;
 }
+
+interface PaginatedData<T> {
+    data: T[];
+    links: {
+        first: string;
+        last: string;
+        next: string;
+        prev: string;
+    };
+    meta: {
+        current_page: number;
+        from: number;
+        last_page: number;
+        links: [
+            {
+                url: string | null,
+                label: string,
+                page: string | null,
+                active: boolean
+            }
+        ];
+        path: string;
+        per_page: number;
+        to: number;
+        total: number;
+    };
+}

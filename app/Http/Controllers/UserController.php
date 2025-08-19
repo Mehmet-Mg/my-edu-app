@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +13,8 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Request as FacadeRequest;
+
 
 class UserController extends Controller
 {
@@ -21,7 +24,13 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('users/index', [
-            'users' => User::with('roles:name')->without('pivot')->get(),
+            'filters' => FacadeRequest::all(['search', 'role']),
+            'paginatedUsers' => new UserCollection(
+                User::orderByName()
+                    ->filter(FacadeRequest::only(['search', 'role']))
+                    ->paginate(2)
+                    ->appends(FacadeRequest::all()),
+            )
         ]);
     }
 
@@ -117,6 +126,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect(route('users.index'))->with('success', 'User deleted.');;
+        return redirect(route('users.index'))->with('success', 'User deleted.');
+        ;
     }
 }
