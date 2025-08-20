@@ -52,29 +52,33 @@ export interface Role {
     name: string;
 }
 
-interface PaginatedData<T> {
+export interface PaginatedData<T> {
     data: T[];
-    links: {
-        first: string;
-        last: string;
-        next: string;
-        prev: string;
-    };
-    meta: {
-        current_page: number;
-        from: number;
-        last_page: number;
-        links: [
-            {
-                url: string | null,
-                label: string,
-                page: string | null,
-                active: boolean
-            }
-        ];
-        path: string;
-        per_page: number;
-        to: number;
-        total: number;
-    };
+    links: PaginatedLink;
+    meta: PaginatedMeta;
 }
+
+export interface PaginatedLink {
+    first: string;
+    last: string;
+    next: string;
+    prev: string;
+};
+
+export interface PaginatedMeta {
+    current_page: number;
+    from: number;
+    last_page: number;
+    links: PaginatedMetaLink[];
+    path: string;
+    per_page: number;
+    to: number;
+    total: number;
+};
+
+export interface PaginatedMetaLink {
+    url: string | null,
+    label: string,
+    page: string | null,
+    active: boolean
+};

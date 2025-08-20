@@ -80,6 +80,46 @@ class PermissionsDemoSeeder extends Seeder
             'email' => 'student@example.com',
         ]);
         $user->assignRole($role5);
+
+                $user = \App\Models\User::factory()->create([
+            'name' => 'Example Student User',
+            'first_name' => 'Example Student User',
+            'last_name' => 'Example Student User',
+            'email' => 'student1@example.com',
+        ]);
+        $user->assignRole($role5);
+
+                $user = \App\Models\User::factory()->create([
+            'name' => 'Example Student User',
+            'first_name' => 'Example Student User',
+            'last_name' => 'Example Student User',
+            'email' => 'student2@example.com',
+        ]);
+        $user->assignRole($role5);
+
+                $user = \App\Models\User::factory()->create([
+            'name' => 'Example Student User',
+            'first_name' => 'Example Student User',
+            'last_name' => 'Example Student User',
+            'email' => 'student3@example.com',
+        ]);
+        $user->assignRole($role5);
+
+                $user = \App\Models\User::factory()->create([
+            'name' => 'Example Student User',
+            'first_name' => 'Example Student User',
+            'last_name' => 'Example Student User',
+            'email' => 'student4@example.com',
+        ]);
+        $user->assignRole($role5);
+
+                $user = \App\Models\User::factory()->create([
+            'name' => 'Example Student User',
+            'first_name' => 'Example Student User',
+            'last_name' => 'Example Student User',
+            'email' => 'student5@example.com',
+        ]);
+        $user->assignRole($role5);
     }
 
 }

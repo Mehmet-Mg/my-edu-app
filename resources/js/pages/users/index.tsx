@@ -14,7 +14,7 @@ import {
     useReactTable,
     VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, ChevronLeftIcon, ChevronRightIcon, Edit, Eye, Plus } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, Edit, Eye, Plus } from 'lucide-react';
 import * as React from 'react';
 
 import AlertMessage from '@/components/alert-message';
@@ -29,18 +29,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
+import { usePrevious } from 'react-use';
+import pickBy from 'lodash/pickBy';
 
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
-import { cn } from '@/lib/utils';
-import PaginationWithLink from '@/components/pagination-with-link';
+import MyPagination from '@/components/pagination-with-link';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -132,6 +125,18 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
+     const { filters } = usePage<{
+    filters: { role?: string; search?: string; per_page?: number };
+  }>().props;
+    
+    const [filterValues, setFilterValues] = React.useState({
+        role: filters.role,
+        search: filters.search,
+        per_page: filters.per_page,
+    });
+
+    const prevFilterValues = usePrevious(filterValues);
+
     const users = paginatedUsers.data;
     debugger;
     React.useEffect(() => {
@@ -142,6 +147,16 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
             toast.error(flash.error)
         }
     }, [flash]);
+
+    React.useEffect(() => {
+        if (prevFilterValues) {
+            const query = Object.keys(pickBy(filterValues)).length ? pickBy(filterValues) : {};
+            router.get(route(route().current() as string), query, {
+                replace: true,
+                preserveState: true,
+            });
+        }
+    }, [filterValues])
 
     const table = useReactTable({
         data: users,
@@ -162,18 +177,45 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
         },
     });
 
+    const handleFilterValuesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        debugger
+        setFilterValues(values => ({
+            ...values,
+            [name]: value,
+        }));
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
-
             <div className="h-full w-full p-4">
-                <div className="flex items-center justify-between py-4">
-                    <Input
-                        placeholder="Filter emails..."
-                        value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
-                        onChange={(event) => table.getColumn('email')?.setFilterValue(event.target.value)}
-                        className="max-w-sm"
-                    />
+                <div className="flex lg:items-center lg:justify-between py-4 flex-col lg:flex-row gap-2">
+                    <div className='flex gap-2 flex-col lg:flex-row'>
+                        <Input
+                            name='search'
+                            placeholder="Filter users..."
+                            value={filterValues.search}
+                            onChange={handleFilterValuesChange}
+                            className="lg:max-w-sm"
+                        />
+                        <Select name='role' onValueChange={(value) => {
+                            setFilterValues(values => ({
+                                ...values,
+                                role: value !== 'all' ? value : '',
+                            }))
+                        }} value={filterValues.role}>
+                            <SelectTrigger className="lg:max-w-sm">
+                                <SelectValue placeholder="Role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All</SelectItem>
+                                <SelectItem value="teacher">Teacher</SelectItem>
+                                <SelectItem value="student">Student</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                     <div className="flex gap-2">
                         <Button asChild>
                             <Link href={route('users.create')}>
@@ -241,20 +283,11 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
                         </TableBody>
                     </Table>
                 </div>
-                <PaginationWithLink links={paginatedUsers.meta.links} />
-                {/* <div className="flex items-center justify-end space-x-2 py-4">
-                    <div className="flex-1 text-sm text-muted-foreground">
-                        {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
-                    </div>
-                    <div className="space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!paginatedUsers.links.prev}>
-                            Previous
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!paginatedUsers.links.next}>
-                            Next
-                        </Button>
-                    </div>
-                </div> */}
+                <MyPagination
+                    links={paginatedUsers.meta.links}
+                    perPage={filterValues.per_page}
+                    onPerPageChange={handleFilterValuesChange}
+                />
             </div>
         </AppLayout>
     );
