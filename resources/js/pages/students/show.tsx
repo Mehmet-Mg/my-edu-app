@@ -11,15 +11,15 @@ import { Label } from '@/components/ui/label';
 import { ArrowLeftIcon, Edit } from 'lucide-react';
 import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 
-export default function UserShow({ user, roles }: { user: User, roles: string[] }) {
+export default function TeacherShow({ teacher, roles }: { teacher: User, roles: string[] }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Users',
-            href: '/users',
+        title: 'Teachers',
+        href: '/teachers',
         },
         {
-            title: user.name,
-            href: '/users',
+            title: teacher.name,
+            href: '/teachers/'+teacher.id,
         },
     ];
 
@@ -28,7 +28,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="space-y-6">
-                    <HeadingSmall title={user.name} description="Ensure your account is using a long, random password to stay secure" />
+                    <HeadingSmall title={teacher.name} description="Ensure your account is using a long, random password to stay secure" />
 
                     <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                         <div className="grid gap-2">
@@ -42,7 +42,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                 autoComplete="name"
                                 placeholder="Name"
                                 disabled
-                                defaultValue={user.name}
+                                defaultValue={teacher.name}
                             />
                         </div>
 
@@ -57,7 +57,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                 autoComplete="email"
                                 placeholder="Email"
                                 disabled
-                                defaultValue={user.email}
+                                defaultValue={teacher.email}
                             />
                         </div>
 
@@ -72,7 +72,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                 autoComplete="email_verified_at"
                                 placeholder="Email Verified At"
                                 disabled
-                                defaultValue={user.email_verified_at ?? ''}
+                                defaultValue={teacher.email_verified_at ?? ''}
                             />
                         </div>
 
@@ -93,14 +93,14 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
 
                         <div className="flex items-center justify-between gap-4 lg:col-span-2">
                             <Button asChild>
-                                <Link href={route('users.index')}>
+                                <Link href={route('teachers.index')}>
                                     <ArrowLeftIcon />
                                     Back
                                 </Link>
                             </Button>
                             <div className="flex items-center gap-4">
                                 <Button asChild>
-                                    <Link href={route('users.edit', user.id)}>
+                                    <Link href={route('teachers.edit', teacher.id)}>
                                         <Edit />
                                         Edit
                                     </Link>
@@ -108,7 +108,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                 <AlertMessage
                                     triggerTitle="Delete"
                                     onContinue={() => {
-                                        router.delete(route('users.destroy', user.id));
+                                        router.delete(route('teachers.destroy', teacher.id));
                                     }}
                                 />
                             </div>

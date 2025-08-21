@@ -13,18 +13,18 @@ import { ArrowLeftIcon, Save } from 'lucide-react';
 import { useRef } from 'react';
 import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 
-export default function UserShow({ user, roles }: { user: User, roles: string[] }) {
+export default function TeacherEdit({ teacher, roles }: { teacher: User, roles: string[] }) {
     const nameInput = useRef<HTMLInputElement>(null);
     const emailInput = useRef<HTMLInputElement>(null);
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Users',
-            href: '/users',
+                 title: 'Teachers',
+        href: '/teachers',
         },
         {
-            title: user.name + ' Edit',
-            href: '/users',
+            title: teacher.name + ' Edit',
+            href: '/teachers/'+teacher.id,
         },
     ];
 
@@ -33,11 +33,11 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="space-y-6">
-                    <HeadingSmall title={user.name + ' Edit'} description="Ensure your account is using a long, random password to stay secure" />
+                    <HeadingSmall title={teacher.name + ' Edit'} description="Ensure your account is using a long, random password to stay secure" />
 
                     <Form
                         method="patch"
-                        action={route('users.update', user.id)}
+                        action={route('teachers.update', teacher.id)}
                         options={{
                             preserveScroll: true,
                         }}
@@ -55,7 +55,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                     >
                         {({ errors, processing, recentlySuccessful }) => (
                             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                                <Input id="id" name="id" type="hidden" defaultValue={user.id} />
+                                <Input id="id" name="id" type="hidden" defaultValue={teacher.id} />
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="name">Name</Label>
@@ -68,7 +68,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                         className="mt-1 block w-full"
                                         autoComplete="name"
                                         placeholder="Name"
-                                        defaultValue={user.name}
+                                        defaultValue={teacher.name}
                                     />
 
                                     <InputError message={errors.name} />
@@ -85,7 +85,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                         className="mt-1 block w-full"
                                         autoComplete="email"
                                         placeholder="Email"
-                                        defaultValue={user.email}
+                                        defaultValue={teacher.email}
                                     />
 
                                     <InputError message={errors.email} />
@@ -109,7 +109,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
 
                                 <div className="flex items-center justify-between gap-4 lg:col-span-2">
                                     <Button asChild type="button">
-                                        <Link href={route('users.index')}>
+                                        <Link href={route('teachers.index')}>
                                             <ArrowLeftIcon />
                                             Back
                                         </Link>

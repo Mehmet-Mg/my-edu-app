@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +20,8 @@ Route::get('/blog', function () {
 })->name('blog');
 
 Route::resource('/users', UserController::class)->only(['index', 'edit', 'create', 'show', 'destroy', 'update', 'store']);
+Route::resource('/teachers', TeacherController::class)->only(['index', 'edit', 'create', 'show', 'destroy', 'update', 'store']);
+Route::resource('/students', StudentController::class)->only(['index', 'edit', 'create', 'show', 'destroy', 'update', 'store']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {

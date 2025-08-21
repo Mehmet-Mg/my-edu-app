@@ -13,18 +13,18 @@ import { ArrowLeftIcon, Save } from 'lucide-react';
 import { useRef } from 'react';
 import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 
-export default function UserCreate() {
+export default function TeacherCreate() {
     const nameInput = useRef<HTMLInputElement>(null);
     const emailInput = useRef<HTMLInputElement>(null);
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Users',
-            href: '/users',
+        title: 'Teachers',
+        href: '/teachers',
         },
         {
-            title: 'User Create',
-            href: '/users/creates',
+            title: 'Teacher Create',
+            href: '/teacher/create',
         },
     ];
 
@@ -37,7 +37,7 @@ export default function UserCreate() {
 
                     <Form
                         method="post"
-                        action={route('users.store')}
+                        action={route('teachers.store')}
                         options={{
                             preserveScroll: true,
                         }}
@@ -53,22 +53,61 @@ export default function UserCreate() {
                         }}
                         className="space-y-6"
                     >
-                        {({ errors, processing, recentlySuccessful }) => (
+                        {({ errors, processing, recentlySuccessful, }) => (
                             <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
                                 <div className="lg:col-span-2 grid gap-2">
                                     <Label htmlFor="role">Role</Label>
-                                    <Select>
-                                        <SelectTrigger>
+                                   
+                                    <Select disabled defaultValue='teacher' value='teacher'>
+                                        <SelectTrigger name='role' id='role'>
                                             <SelectValue placeholder="role" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem disabled value="admin">Admin</SelectItem>
                                             <SelectItem disabled value="Super-Admin">Super Admin</SelectItem>
                                             <SelectItem value="teacher">Teacher</SelectItem>
-                                            <SelectItem value="student">Student</SelectItem>
+                                            <SelectItem disabled value="student">Student</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.role} className="mt-2" />
+
+                                    <input name='role' id='role' type='hidden' value="teacher" />
+                                </div>
+
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="first_name">First Name</Label>
+
+                                    <Input
+                                        id="first_name"
+                                        ref={nameInput}
+                                        name="first_name"
+                                        type="text"
+                                        className="mt-1 block w-full"
+                                        autoComplete="first_name"
+                                        placeholder="First Name"
+                                        tabIndex={2}
+                                    />
+
+                                    <InputError message={errors.first_name} />
+                                </div>
+
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="last_name">Last Name</Label>
+
+                                    <Input
+                                        id="last_name"
+                                        ref={nameInput}
+                                        name="last_name"
+                                        type="text"
+                                        className="mt-1 block w-full"
+                                        autoComplete="last_name"
+                                        placeholder="Last Name"
+                                        tabIndex={2}
+                                    />
+
+                                    <InputError message={errors.last_name} />
                                 </div>
 
                                 <div className="grid gap-2">

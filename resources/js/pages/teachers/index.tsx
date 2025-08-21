@@ -37,8 +37,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Users',
-        href: '/users',
+        title: 'Teachers',
+        href: '/teachers',
     },
 ];
 
@@ -99,18 +99,18 @@ export const columns: ColumnDef<User>[] = [
             return (
                 <div className='flex gap-2'>
                     <Button variant="secondary" size="icon" className="size-8 bg-yellow-500 hover:bg-yellow-200" asChild>
-                        <Link href={route('users.show', user.id)}>
+                        <Link href={route('teachers.show', user.id)}>
                             <Eye />
                         </Link>
                     </Button>
                     <Button variant="default" size="icon" className="size-8" asChild>
-                        <Link href={route('users.edit', user.id)} >
+                        <Link href={route('teachers.edit', user.id)} >
                             <Edit />
                         </Link>
                     </Button>
                     <AlertMessage
                         onContinue={() => {
-                            router.delete(route('users.destroy', row.getValue('id')));
+                            router.delete(route('teachers.destroy', row.getValue('id')));
                         }}
                     />
                 </div>
@@ -119,7 +119,7 @@ export const columns: ColumnDef<User>[] = [
     },
 ];
 
-export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedData<User> }) {
+export default function Teachers({ paginatedUsers }: { paginatedUsers: PaginatedData<User> }) {
     const { flash } = usePage<SharedData>().props;
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -137,7 +137,8 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
 
     const prevFilterValues = usePrevious(filterValues);
 
-    const teachers = paginatedUsers.data;
+    const users = paginatedUsers.data;
+
     React.useEffect(() => {
         if (flash.success) {
             toast.success(flash.success)
@@ -158,7 +159,7 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
     }, [filterValues])
 
     const table = useReactTable({
-        data: teachers,
+        data: users,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -216,7 +217,7 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
                     </div>
                     <div className="flex gap-2">
                         <Button asChild>
-                            <Link href={route('users.create')}>
+                            <Link href={route('teachers.create')}>
                                 <Plus />
                                 Create
                             </Link>
