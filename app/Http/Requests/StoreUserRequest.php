@@ -28,7 +28,7 @@ class StoreUserRequest extends FormRequest
             'password' => ['required', 'string', 'min:8'],
             'address' => ['required', 'string', 'max:255'],
             'phone_number' => ['required', 'string', 'max:255'],
-            'terms_accepted' => ['required', 'boolean'],
+            // 'terms_accepted' => ['required', 'boolean'],
             'role' => ['required', 'string', 'exists:roles,name'],
         ];
     }

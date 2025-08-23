@@ -53,7 +53,7 @@ export default function UserCreate({ roles }: { roles: string[] }) {
 
                                     <Input
                                         id="first_name"
-                                        name="name"
+                                        name="first_name"
                                         type="text"
                                         className="mt-1 block w-full"
                                         autoComplete="first_name"
@@ -158,7 +158,7 @@ export default function UserCreate({ roles }: { roles: string[] }) {
 
                                 <div className="grid gap-2">
                                     <Label htmlFor="role">Role</Label>
-                                    <Select>
+                                    <Select name='role'>
                                         <SelectTrigger tabIndex={8} name="role" className="w-full">
                                             <SelectValue placeholder="role" />
                                         </SelectTrigger>
@@ -169,12 +169,6 @@ export default function UserCreate({ roles }: { roles: string[] }) {
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.role} className="mt-2" />
-                                </div>
-
-                                <div className="grid gap-2">
-                                    <Label htmlFor="terms_accepted">Terms Accepted</Label>
-                                    <Checkbox id="terms_accepted" name="terms_accepted"  tabIndex={9}/>
-                                    <InputError message={errors.terms_accepted} className="mt-2" />
                                 </div>
 
                                 <div className="lg:col-span-2 flex items-center justify-between gap-4">

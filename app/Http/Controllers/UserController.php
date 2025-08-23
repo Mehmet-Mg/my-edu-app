@@ -24,26 +24,8 @@ class UserController extends Controller
      */
     public function index(Request $request): Response
     {
-
-        // 'per_page' sorgu parametresini al, eğer yoksa varsayılan olarak 10 kullan
-        $perPage = FacadeRequest::input('per_page', 10);
-
-        // 'per_page' değerinin geçerli bir sayı olduğundan emin ol
-        // Örneğin, sadece belirli değerlere (10, 25, 50, 100) izin ver.
-        $allowedPerPage = [5, 10, 25, 50, 100];
-        if (!in_array((int) $perPage, $allowedPerPage)) {
-            $perPage = 10; // Geçersizse varsayılana dön
-        }
-
-
         return Inertia::render('users/index', [
-            'filters' => FacadeRequest::all(['search', 'role', 'per_page']),
-            'paginatedUsers' => new UserCollection(
-                User::orderByName()
-                    ->filter(FacadeRequest::only(['search', 'role']))
-                    ->paginate($perPage)
-                    ->appends(FacadeRequest::all()),
-            )
+            'users' => new UserCollection(User::with('roles')->get()),
         ]);
     }
 
@@ -63,8 +45,11 @@ class UserController extends Controller
         $request->validated();
 
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
             'password' => Hash::make($request->password),
         ]);
 
