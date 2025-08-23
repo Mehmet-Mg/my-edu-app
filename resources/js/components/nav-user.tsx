@@ -11,7 +11,7 @@ export function NavUser() {
     const { auth } = usePage<SharedData>().props;
     const { state } = useSidebar();
     const isMobile = useIsMobile();
-
+debugger
     return (
         <SidebarMenu>
             <SidebarMenuItem>

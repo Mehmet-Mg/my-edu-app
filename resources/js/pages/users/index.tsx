@@ -34,88 +34,13 @@ import pickBy from 'lodash/pickBy';
 
 import MyPagination from '@/components/pagination-with-link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DataTable } from '@/components/data-table';
+import { columns } from './columns';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Users',
         href: '/users',
-    },
-];
-
-export const columns: ColumnDef<User>[] = [
-    {
-        id: 'select',
-        header: ({ table }) => (
-            <Checkbox
-                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: 'id',
-        header: 'Id',
-        cell: ({ row }) => <div className="capitalize">{row.getValue('id')}</div>,
-    },
-    {
-        accessorKey: 'name',
-        header: 'Name',
-        cell: ({ row }) => <div className="capitalize">{row.getValue('name')}</div>,
-    },
-    {
-        accessorKey: 'email',
-        header: ({ column }) => {
-            return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                    Email
-                    <ArrowUpDown />
-                </Button>
-            );
-        },
-        cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>,
-    },
-    {
-        accessorKey: 'roles',
-        header: 'Role',
-        cell: ({ row }) => <div className="capitalize">{(row.getValue('roles') && row.getValue('roles').length > 0) ? row.getValue('roles')[0].name : ''}</div>,
-    },
-    {
-        accessorKey: 'email_verified_at',
-        header: 'Email Verified At',
-        cell: ({ row }) => <div className="capitalize">{row.getValue('email_verified_at')}</div>,
-    },
-    {
-        id: 'actions',
-        header: "İşlemler",
-        enableHiding: false,
-        cell: ({ row }) => {
-            const user = row.original;
-            return (
-                <div className='flex gap-2'>
-                    <Button variant="secondary" size="icon" className="size-8 bg-yellow-500 hover:bg-yellow-200" asChild>
-                        <Link href={route('users.show', user.id)}>
-                            <Eye />
-                        </Link>
-                    </Button>
-                    <Button variant="default" size="icon" className="size-8" asChild>
-                        <Link href={route('users.edit', user.id)} >
-                            <Edit />
-                        </Link>
-                    </Button>
-                    <AlertMessage
-                        onContinue={() => {
-                            router.delete(route('users.destroy', row.getValue('id')));
-                        }}
-                    />
-                </div>
-            );
-        },
     },
 ];
 
@@ -125,10 +50,10 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
-     const { filters } = usePage<{
-    filters: { role?: string; search?: string; per_page?: number };
-  }>().props;
-    
+    const { filters } = usePage<{
+        filters: { role?: string; search?: string; per_page?: number };
+    }>().props;
+
     const [filterValues, setFilterValues] = React.useState({
         role: filters.role,
         search: filters.search,
@@ -176,20 +101,20 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
         },
     });
 
-    const handleFilterValuesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setFilterValues(values => ({
-            ...values,
-            [name]: value,
-        }));
-    }
+    // const handleFilterValuesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    //     const name = e.target.name;
+    //     const value = e.target.value;
+    //     setFilterValues(values => ({
+    //         ...values,
+    //         [name]: value,
+    //     }));
+    // }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
             <div className="h-full w-full p-4">
-                <div className="flex lg:items-center lg:justify-between py-4 flex-col lg:flex-row gap-2">
+                {/* <div className="flex lg:items-center lg:justify-between py-4 flex-col lg:flex-row gap-2">
                     <div className='flex gap-2 flex-col lg:flex-row'>
                         <Input
                             name='search'
@@ -246,46 +171,10 @@ export default function Users({ paginatedUsers }: { paginatedUsers: PaginatedDat
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
+                </div> */}
+                <div className="container mx-auto">
+                    <DataTable columns={columns} data={paginatedUsers.data} />
                 </div>
-                <div className="overflow-hidden rounded-md border">
-                    <Table>
-                        <TableHeader>
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map((header) => {
-                                        return (
-                                            <TableHead key={header.id}>
-                                                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                            </TableHead>
-                                        );
-                                    })}
-                                </TableRow>
-                            ))}
-                        </TableHeader>
-                        <TableBody>
-                            {table.getRowModel().rows?.length ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-24 text-center">
-                                        No results.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-                <MyPagination
-                    links={paginatedUsers.meta.links}
-                    perPage={filterValues.per_page}
-                    onPerPageChange={handleFilterValuesChange}
-                />
             </div>
         </AppLayout>
     );

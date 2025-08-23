@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -24,13 +25,13 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
 
-              // 'per_page' sorgu parametresini al, eğer yoksa varsayılan olarak 10 kullan
+        // 'per_page' sorgu parametresini al, eğer yoksa varsayılan olarak 10 kullan
         $perPage = FacadeRequest::input('per_page', 10);
 
         // 'per_page' değerinin geçerli bir sayı olduğundan emin ol
         // Örneğin, sadece belirli değerlere (10, 25, 50, 100) izin ver.
         $allowedPerPage = [5, 10, 25, 50, 100];
-        if (!in_array((int)$perPage, $allowedPerPage)) {
+        if (!in_array((int) $perPage, $allowedPerPage)) {
             $perPage = 10; // Geçersizse varsayılana dön
         }
 
@@ -51,17 +52,15 @@ class UserController extends Controller
      */
     public function create(Request $request): Response
     {
-        return Inertia::render('users/create');
+        $roles = \Spatie\Permission\Models\Role::all()->pluck('name');
+        return Inertia::render('users/create', [
+            'roles' => $roles,
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'in:student,teacher']
-        ]);
+        $request->validated();
 
         $user = User::create([
             'name' => $request->name,
@@ -69,11 +68,16 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $user->assignRole($request['role']);
+        if ($request->has('terms_accepted')) {
+            $user->terms_accepted_at = now();
+            $user->save();
+        }
+
+        if ($request->has('role')) {
+            $user->syncRoles($request->role);
+        }
 
         event(new Registered($user));
-
-        // Auth::login($user);
 
         return redirect(route('users.index'))->with('success', 'User created.');
     }

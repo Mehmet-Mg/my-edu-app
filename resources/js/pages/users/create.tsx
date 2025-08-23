@@ -12,28 +12,27 @@ import { Transition } from '@headlessui/react';
 import { ArrowLeftIcon, Save } from 'lucide-react';
 import { useRef } from 'react';
 import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { Checkbox } from "@/components/ui/checkbox"
 
-export default function UserCreate() {
-    const nameInput = useRef<HTMLInputElement>(null);
-    const emailInput = useRef<HTMLInputElement>(null);
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Users',
+        href: '/users',
+    },
+    {
+        title: 'User Create',
+        href: '/users/creates',
+    },
+];
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Users',
-            href: '/users',
-        },
-        {
-            title: 'User Create',
-            href: '/users/creates',
-        },
-    ];
+export default function UserCreate({ roles }: { roles: string[] }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="space-y-6">
-                    <HeadingSmall title="User Create" description="Ensure your account is using a long, random password to stay secure" />
+                    <HeadingSmall title="User Create" />
 
                     <Form
                         method="post"
@@ -43,49 +42,43 @@ export default function UserCreate() {
                         }}
                         resetOnError={['password', 'password_confirmation', 'current_password']}
                         resetOnSuccess
-                        onError={(errors) => {
-                            if (errors.name) {
-                                nameInput.current?.focus();
-                            }
-                            if (errors.email) {
-                                emailInput.current?.focus();
-                            }
-                        }}
+                    
                         className="space-y-6"
                     >
                         {({ errors, processing, recentlySuccessful }) => (
-                            <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
-                                <div className="lg:col-span-2 grid gap-2">
-                                    <Label htmlFor="role">Role</Label>
-                                    <Select>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="role" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem disabled value="admin">Admin</SelectItem>
-                                            <SelectItem disabled value="Super-Admin">Super Admin</SelectItem>
-                                            <SelectItem value="teacher">Teacher</SelectItem>
-                                            <SelectItem value="student">Student</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <InputError message={errors.role} className="mt-2" />
-                                </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
+                                    <Label htmlFor="first_name">First Name</Label>
 
                                     <Input
-                                        id="name"
-                                        ref={nameInput}
+                                        id="first_name"
                                         name="name"
                                         type="text"
                                         className="mt-1 block w-full"
-                                        autoComplete="name"
-                                        placeholder="Name"
+                                        autoComplete="first_name"
+                                        placeholder="First Name"
+                                        tabIndex={1}
+                                    />
+
+                                    <InputError message={errors.first_name} />
+                                </div>
+
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="last_name">Last Name</Label>
+
+                                    <Input
+                                        id="last_name"
+                                        name="last_name"
+                                        type="text"
+                                        className="mt-1 block w-full"
+                                        autoComplete="last_name"
+                                        placeholder="Last Name"
                                         tabIndex={2}
                                     />
 
-                                    <InputError message={errors.name} />
+                                    <InputError message={errors.last_name} />
                                 </div>
 
                                 <div className="grid gap-2">
@@ -93,7 +86,6 @@ export default function UserCreate() {
 
                                     <Input
                                         id="email"
-                                        ref={emailInput}
                                         name="email"
                                         type="email"
                                         className="mt-1 block w-full"
@@ -133,6 +125,58 @@ export default function UserCreate() {
                                     <InputError message={errors.password_confirmation} />
                                 </div>
 
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="address">Address</Label>
+
+                                    <Input
+                                        id="address"
+                                        name="address"
+                                        type="text"
+                                        className="mt-1 block w-full"
+                                        autoComplete="address"
+                                        placeholder="Address"
+                                        tabIndex={6}
+                                    />
+
+                                    <InputError message={errors.address} />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="phone_number">Phone Number</Label>
+                                    <Input
+                                        id="phone_number"
+                                        name="phone_number"
+                                        type="tel"
+                                        className="mt-1 block w-full"
+                                        autoComplete="phone_number"
+                                        placeholder="Phone Number"
+                                        tabIndex={7}
+                                    />
+                                    <InputError message={errors.phone_number} />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="role">Role</Label>
+                                    <Select>
+                                        <SelectTrigger tabIndex={8} name="role" className="w-full">
+                                            <SelectValue placeholder="role" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {roles.map((role) => (
+                                                <SelectItem key={role} value={role}>{role}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.role} className="mt-2" />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="terms_accepted">Terms Accepted</Label>
+                                    <Checkbox id="terms_accepted" name="terms_accepted"  tabIndex={9}/>
+                                    <InputError message={errors.terms_accepted} className="mt-2" />
+                                </div>
+
                                 <div className="lg:col-span-2 flex items-center justify-between gap-4">
                                     <Button asChild type="button">
                                         <Link href={route('users.index')}>
@@ -140,7 +184,7 @@ export default function UserCreate() {
                                             Back
                                         </Link>
                                     </Button>
-                                    <Button type="submit" disabled={processing}>
+                                    <Button type="submit" disabled={processing} tabIndex={10}>
                                         <Save />
                                         Save
                                     </Button>
