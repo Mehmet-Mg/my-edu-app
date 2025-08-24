@@ -46,6 +46,7 @@ export interface User {
     created_at: string;
     updated_at: string;
     roles: string[];
+    terms_accepted_at?: Date | null;
     [key: string]: unknown; // This allows for additional properties...
 }
 

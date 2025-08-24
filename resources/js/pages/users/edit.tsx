@@ -12,6 +12,7 @@ import { Transition } from '@headlessui/react';
 import { ArrowLeftIcon, Save } from 'lucide-react';
 import { useRef } from 'react';
 import { SelectTrigger, Select, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function UserShow({ user, roles }: { user: User, roles: string[] }) {
     const nameInput = useRef<HTMLInputElement>(null);
@@ -23,7 +24,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
             href: '/users',
         },
         {
-            title: user.name + ' Edit',
+            title: user.full_name + ' Edit',
             href: '/users',
         },
     ];
@@ -33,7 +34,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="space-y-6">
-                    <HeadingSmall title={user.name + ' Edit'} description="Ensure your account is using a long, random password to stay secure" />
+                    <HeadingSmall title={user.full_name + ' Edit'} description="Ensure your account is using a long, random password to stay secure" />
 
                     <Form
                         method="patch"
@@ -58,20 +59,37 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                 <Input id="id" name="id" type="hidden" defaultValue={user.id} />
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
+                                    <Label htmlFor="first_name">First Name</Label>
 
                                     <Input
                                         id="name"
                                         ref={nameInput}
-                                        name="name"
+                                        name="first_name"
                                         type="text"
                                         className="mt-1 block w-full"
-                                        autoComplete="name"
-                                        placeholder="Name"
-                                        defaultValue={user.name}
+                                        autoComplete="first_name"
+                                        placeholder="First Name"
+                                        defaultValue={user.first_name}
                                     />
 
-                                    <InputError message={errors.name} />
+                                    <InputError message={errors.first_name} />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="last_name">Last Name</Label>
+
+                                    <Input
+                                        id="last_name"
+                                        ref={nameInput}
+                                        name="last_name"
+                                        type="text"
+                                        className="mt-1 block w-full"
+                                        autoComplete="last_name"
+                                        placeholder="Last Name"
+                                        defaultValue={user.last_name}
+                                    />
+
+                                    <InputError message={errors.last_name} />
                                 </div>
 
                                 <div className="grid gap-2">
@@ -92,8 +110,36 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
                                 </div>
 
                                 <div className="grid gap-2">
+                                    <Label htmlFor="address">Address</Label>
+                                    <Input
+                                        id="address"
+                                        name="address"
+                                        type="text"
+                                        className="mt-1 block w-full"
+                                        autoComplete="address"
+                                        placeholder="Address"
+                                        tabIndex={6}
+                                    />
+                                    <InputError message={errors.address} />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="phone_number">Phone Number</Label>
+                                    <Input
+                                        id="phone_number"
+                                        name="phone_number"
+                                        type="tel"
+                                        className="mt-1 block w-full"
+                                        autoComplete="phone_number"
+                                        placeholder="Phone Number"
+                                        tabIndex={7}
+                                    />
+                                    <InputError message={errors.phone_number} />
+                                </div>
+
+                                <div className="grid gap-2">
                                     <Label htmlFor="role">Role</Label>
-                                    <Select defaultValue={roles && roles.length > 0 ? roles[0] : ""}>
+                                    <Select name='role' defaultValue={roles && roles.length > 0 ? roles[0] : ""}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="role" />
                                         </SelectTrigger>

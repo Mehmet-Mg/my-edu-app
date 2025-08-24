@@ -18,7 +18,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
             href: '/users',
         },
         {
-            title: user.name,
+            title: user.full_name,
             href: '/users',
         },
     ];
@@ -28,7 +28,7 @@ export default function UserShow({ user, roles }: { user: User, roles: string[] 
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="space-y-6">
-                    <HeadingSmall title={user.name} description="Ensure your account is using a long, random password to stay secure" />
+                    <HeadingSmall title={user.first_name} description="Ensure your account is using a long, random password to stay secure" />
 
                     <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
                         <div className="grid gap-2">

@@ -10,6 +10,9 @@ import { toast } from 'sonner';
 
 import { DataTable } from '@/components/data-table';
 import { columns } from './columns';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table } from '@tanstack/react-table';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,6 +33,46 @@ export default function Users({ users }: { users: { data: User[] } }) {
         }
     }, [flash]);
 
+    const filterElements = (table: Table<User>) => (
+        <div className='grid grid-cols-2 gap-2 lg:w-full lg:max-w-md'>
+            <Input
+                placeholder="Filter emails..."
+                value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+                onChange={(event) =>
+                    table.getColumn("email")?.setFilterValue(event.target.value)
+                }
+                className="lg:max-w-sm w-full"
+            />
+
+            <Select
+                value={(table.getColumn("roles")?.getFilterValue() as string) ?? ""}
+                onValueChange={(value: string) => {
+                    table.getColumn("roles")?.setFilterValue(value === 'all' ? undefined : value)
+                }}
+            >
+                <SelectTrigger className="lg:max-w-sm w-full">
+                    <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent side="top">
+                    {['all', 'teacher', 'student', 'admin', 'user'].map((role) => (
+                        <SelectItem key={role} value={`${role}`}>
+                            {role}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    );
+
+    const customButton = (
+        <Button asChild size="sm">
+            <Link href={route('users.create')}>
+                <Plus />
+                Create
+            </Link>
+        </Button>
+    )
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
@@ -37,15 +80,9 @@ export default function Users({ users }: { users: { data: User[] } }) {
                 <div className="container mx-auto">
                     <DataTable
                         columns={columns}
-                        customButton={
-                            <Button asChild size="sm">
-                                <Link href={route('users.create')}>
-                                    <Plus />
-                                    Create
-                                </Link>
-                            </Button>
-                        }
-                        data={users.data} />
+                        customButton={customButton}
+                        data={users.data}
+                        filterElements={filterElements} />
                 </div>
             </div>
         </AppLayout>

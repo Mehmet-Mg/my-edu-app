@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -73,7 +74,7 @@ class UserController extends Controller
     public function edit(User $user): Response
     {
         return Inertia::render('users/edit', [
-            'user' => $user->only(['id', 'name', 'email']),
+            'user' => $user->only(['id', 'first_name', 'last_name', 'full_name', 'email']),
             'roles' => $user->getRoleNames(),
         ]);
     }
@@ -81,30 +82,18 @@ class UserController extends Controller
     /**
      * Show the user's profile settings page.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+        $user->update($request->validated());
 
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class),//->ignore($request->get('id')),
-            ],
-        ]);
-
-        $user = User::findOrFail($request->get('id'));
-
-        $user->fill($validated);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
+        if ($request->has('terms_accepted') && ! $user->terms_accepted_at) {
+            $user->terms_accepted_at = now();
+            $user->save();
         }
 
-        $user->save();
+        if ($request->has('role')) {
+            $user->syncRoles($request->role);
+        }
 
         return redirect(route('users.index'))->with('success', 'User updated.');
     }

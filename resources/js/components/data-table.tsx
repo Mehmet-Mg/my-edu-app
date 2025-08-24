@@ -1,5 +1,5 @@
 
-import React from "react"
+import React, { JSX } from "react"
 
 import {
     ColumnDef,
@@ -10,6 +10,7 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     SortingState,
+    Table as TanstackTable,
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
@@ -23,14 +24,6 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableViewOptions } from "./data-table-view-options"
 
@@ -39,13 +32,15 @@ import { DataTableViewOptions } from "./data-table-view-options"
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[],
-    customButton?: React.ReactNode
+    customButton?: React.ReactNode;
+    filterElements?: (table: TanstackTable<TData>) => JSX.Element; // <-- yeni prop
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
-    customButton
+    customButton,
+    filterElements,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -76,15 +71,8 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="flex items-center py-4 gap-2">
-                <Input
-                    placeholder="Filter emails..."
-                    value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("email")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+            <div className="flex lg:flex-row flex-col lg:items-center py-4 gap-2">
+                {filterElements && filterElements(table)}
                 <DataTableViewOptions table={table} />
                 {customButton}
             </div>
@@ -132,13 +120,7 @@ export function DataTable<TData, TValue>({
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="text-muted-foreground flex-1 text-sm">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div>
-                <DataTablePagination table={table} />
-            </div>
+            <DataTablePagination table={table} />
         </div>
 
     )
